@@ -32,9 +32,7 @@ pub fn build(b: *std.Build) void {
     exe.override_dest_dir = std.Build.InstallDir{
         .custom = "boot",
     };
-    exe.rdynamic = true;
     exe.addAssemblyFileSource(.{ .path = "src/arch/x86/start.s" });
-
 
     // This declares intent for the executable to be installed into the
     // standard location when the user invokes the "install" step (the default
