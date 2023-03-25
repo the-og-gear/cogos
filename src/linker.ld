@@ -5,14 +5,8 @@ SECTIONS {
 	.multiboot :
 	{
 		/* KEEP otherwise it gets garbage collected by linker */
-		WORD(.multiboot)
+		*(.multiboot)
 		. = ALIGN(2K);
-	}
-
-	.dynamic :
-	{
-		*(.dynamic .dynamic.*)
-		. = ALIGN(4K);
 	}
 
 	.text :
