@@ -1,0 +1,1 @@
+grub-mkrescue --output=disk.iso zig-out
