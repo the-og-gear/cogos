@@ -48,12 +48,27 @@ pub fn clear() void {
     vga.clear();
 }
 
-var vgaIntegerPrintBuffer: []u8 = undefined;
+// I really wish printing integers at runtime didn't look like this much of a mess, but. Here we are.
+// So, have some art.
+//    ,---,                                                  ___                                                 ___      ,---,
+// ,`--.' |                                                ,--.'|_                ,---,                        ,--.'|_  ,--.' |
+// |   :  :                 .---.                  ,---,   |  | :,'             ,---.'|                        |  | :,' |  |  :
+// :   |  '                /. ./|              ,-+-. /  |  :  : ' :             |   | :                        :  : ' : :  :  :
+// |   :  |             .-'-. ' |  ,--.--.    ,--.'|'   |.;__,'  /              |   | |   ,---.     ,--.--.  .;__,'  /  :  |  |,--.
+// '   '  ;            /___/ \: | /       \  |   |  ,"' ||  |   |             ,--.__| |  /     \   /       \ |  |   |   |  :  '   |
+// |   |  |         .-'.. '   ' ..--.  .-. | |   | /  | |:__,'| :            /   ,'   | /    /  | .--.  .-. |:__,'| :   |  |   /' :
+// '   :  ;        /___/ \:     ' \__\/: . . |   | |  | |  '  : |__         .   '  /  |.    ' / |  \__\/: . .  '  : |__ '  :  | | |
+// |   |  '        .   \  ' .\    ," .--.; | |   | |  |/   |  | '.'|        '   ; |:  |'   ;   /|  ," .--.; |  |  | '.'||  |  ' | :
+// '   :  |         \   \   ' \ |/  /  ,.  | |   | |--'    ;  :    ;        |   | '/  ''   |  / | /  /  ,.  |  ;  :    ;|  :  :_:,'
+// ;   |.'           \   \  |--";  :   .'   \|   |/        |  ,   /         |   :    :||   :    |;  :   .'   \ |  ,   / |  | ,'
+// '---'              \   \ |   |  ,     .-./'---'          ---`-'           \   \  /   \   \  / |  ,     .-./  ---`-'  `--''
+//                     '---"     `--`---'                                     `----'     `----'   `--`---'
+var vgaIntegerPrintBuffer: [21]u8 = undefined;
 fn intToString(int: u32, buf: []u8) ![]const u8 {
     return try std.fmt.bufPrint(buf, "{}", .{int});
 }
 pub fn writeInt(int: anytype) void {
-    const intAsString = intToString(int, vgaIntegerPrintBuffer) catch unreachable;
+    const intAsString = intToString(int, &vgaIntegerPrintBuffer) catch unreachable;
     print(intAsString);
 }
 
