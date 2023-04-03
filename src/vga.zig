@@ -37,15 +37,24 @@ pub const VGAEntry = packed struct {
     background: Color,
 };
 
-const Errors = error{};
 pub fn print(format: []const u8) void {
     vga.writeString(format);
 }
 pub fn println(format: []const u8) void {
     vga.writeString(format);
+    vga.writeNewline();
 }
 pub fn clear() void {
     vga.clear();
+}
+
+var vgaIntegerPrintBuffer: []u8 = undefined;
+fn intToString(int: u32, buf: []u8) ![]const u8 {
+    return try std.fmt.bufPrint(buf, "{}", .{int});
+}
+pub fn writeInt(int: anytype) void {
+    const intAsString = intToString(int, vgaIntegerPrintBuffer) catch unreachable;
+    print(intAsString);
 }
 
 pub const VGA = struct {
@@ -57,6 +66,7 @@ pub const VGA = struct {
     // Clear the screen
     pub fn clear(self: *VGA) void {
         std.mem.set(VGAEntry, self.vram[0..VGA_SIZE], self.entry(' '));
+        self.cursor = 0;
     }
 
     // Print a character
@@ -65,7 +75,7 @@ pub const VGA = struct {
             self.scrollDown();
         }
 
-        switch(char) {
+        switch (char) {
             // Newline
             '\n' => {
                 self.writeChar(' ');
@@ -105,7 +115,7 @@ pub const VGA = struct {
     fn scrollDown(self: *VGA) void {
         const first = VGA_WIDTH;
         const last = VGA_SIZE - VGA_WIDTH;
-        std.mem.copy(VGAEntry, self.vram[0..last], self.vram[first .. VGA_SIZE]);
+        std.mem.copy(VGAEntry, self.vram[0..last], self.vram[first..VGA_SIZE]);
         std.mem.set(VGAEntry, self.vram[last..VGA_SIZE], self.entry(' '));
 
         self.cursor -= VGA_WIDTH;

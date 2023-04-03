@@ -43,6 +43,8 @@ export fn kmain(magic: u32, info: *const multiboot.MultibootInfo) void {
     vga.println("-------");
     vga.println(" CogOS ");
     vga.println("-------");
-
-    _ = info;
+    vga.println("");
+    vga.print("Value of the thing: ");
+    vga.writeInt(info.framebuffer_width);
+    vga.println("");
 }
