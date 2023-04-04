@@ -64,12 +64,28 @@ pub fn clear() void {
 // '---'              \   \ |   |  ,     .-./'---'          ---`-'           \   \  /   \   \  / |  ,     .-./  ---`-'  `--''
 //                     '---"     `--`---'                                     `----'     `----'   `--`---'
 var vgaIntegerPrintBuffer: [21]u8 = undefined;
-fn intToString(int: u32, buf: []u8) ![]const u8 {
+fn intToString(int: u64, buf: []u8) ![]const u8 {
     return try std.fmt.bufPrint(buf, "{}", .{int});
 }
 pub fn writeInt(int: anytype) void {
     const intAsString = intToString(int, &vgaIntegerPrintBuffer) catch unreachable;
     print(intAsString);
+}
+
+pub fn set_size(wide: u32, high: u32) void {
+    vga.width = wide;
+    vga.height = high;
+    vga.size = wide * high;
+}
+
+extern fn graphics_mode() void;
+extern fn vga_mode() void;
+pub const VGA_Mode = enum(u8) { graphics = 0x13, vga = 0x03 };
+pub fn set_vga_mode(mode: VGA_Mode) void {
+    switch (mode) {
+        .graphics => graphics_mode(),
+        .vga => vga_mode(),
+    }
 }
 
 pub const VGA = struct {
@@ -78,15 +94,19 @@ pub const VGA = struct {
     foreground: Color,
     background: Color,
 
+    width: u32 = VGA_WIDTH,
+    height: u32 = VGA_HEIGHT,
+    size: u32 = VGA_SIZE,
+
     // Clear the screen
     pub fn clear(self: *VGA) void {
-        std.mem.set(VGAEntry, self.vram[0..VGA_SIZE], self.entry(' '));
+        std.mem.set(VGAEntry, self.vram[0..self.size], self.entry(' '));
         self.cursor = 0;
     }
 
     // Print a character
     fn writeChar(self: *VGA, char: u8) void {
-        if (self.cursor == VGA_WIDTH * VGA_HEIGHT - 1) {
+        if (self.cursor == self.width * self.height - 1) {
             self.scrollDown();
         }
 
@@ -94,7 +114,7 @@ pub const VGA = struct {
             // Newline
             '\n' => {
                 self.writeChar(' ');
-                while (self.cursor % VGA_WIDTH != 0)
+                while (self.cursor % self.width != 0)
                     self.writeChar(' ');
             },
             // Tab
@@ -128,12 +148,12 @@ pub const VGA = struct {
 
     // Scroll one line down
     fn scrollDown(self: *VGA) void {
-        const first = VGA_WIDTH;
-        const last = VGA_SIZE - VGA_WIDTH;
-        std.mem.copy(VGAEntry, self.vram[0..last], self.vram[first..VGA_SIZE]);
-        std.mem.set(VGAEntry, self.vram[last..VGA_SIZE], self.entry(' '));
+        const first = self.width;
+        const last = self.size - self.width;
+        std.mem.copy(VGAEntry, self.vram[0..last], self.vram[first..self.size]);
+        std.mem.set(VGAEntry, self.vram[last..self.size], self.entry(' '));
 
-        self.cursor -= VGA_WIDTH;
+        self.cursor -= self.width;
     }
 
     // Build an entry with current foreground and background

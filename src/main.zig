@@ -37,6 +37,8 @@ export fn kmain(magic: u32, info: *const multiboot.MultibootInfo) void {
     _ = .{ .stack = stack_bytes_slice };
     std.debug.assert(magic == multiboot.MULTIBOOT_BOOTLOADER_MAGIC);
 
+    vga.set_size(info.framebuffer_width, info.framebuffer_height);
+
     // Write a string to the VGA memory
     vga.println("Test");
     vga.clear();
@@ -47,4 +49,8 @@ export fn kmain(magic: u32, info: *const multiboot.MultibootInfo) void {
     vga.print("Value of the thing: ");
     vga.writeInt(info.framebuffer_width);
     vga.println("");
+
+    // Test VGA graphics mode
+    vga.clear();
+    vga.set_vga_mode(vga.VGA_Mode.graphics);
 }
