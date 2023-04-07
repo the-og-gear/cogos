@@ -78,16 +78,6 @@ pub fn set_size(wide: u32, high: u32) void {
     vga.size = wide * high;
 }
 
-extern fn graphics_mode() void;
-extern fn vga_mode() void;
-pub const VGA_Mode = enum(u8) { graphics = 0x13, vga = 0x03 };
-pub fn set_vga_mode(mode: VGA_Mode) void {
-    switch (mode) {
-        .graphics => graphics_mode(),
-        .vga => vga_mode(),
-    }
-}
-
 pub const VGA = struct {
     vram: []VGAEntry,
     cursor: usize,

@@ -24,7 +24,7 @@ pub fn build(b: *std.Build) void {
         // complicated build scripts, this could be a generated file.
         .root_source_file = .{ .path = "src/main.zig" },
         .target = target,
-        .optimize = std.builtin.Mode.Debug,
+        .optimize = std.builtin.Mode.ReleaseSmall,
     });
     exe.linker_script = std.Build.FileSource{
         .path = "src/linker.ld",
@@ -32,8 +32,9 @@ pub fn build(b: *std.Build) void {
     exe.override_dest_dir = std.Build.InstallDir{
         .custom = "boot",
     };
+    exe.strip = false;
+
     exe.addAssemblyFileSource(.{ .path = "src/arch/x86/start.s" });
-    exe.addAssemblyFileSource(.{ .path = "src/arch/x86/vga_mode.s" });
 
     // This declares intent for the executable to be installed into the
     // standard location when the user invokes the "install" step (the default

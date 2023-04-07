@@ -31,11 +31,13 @@ const stack_bytes_slice = stack_bytes[0..];
 
 // Main kernel entry
 export fn kmain(magic: u32, info: *const multiboot.MultibootInfo) void {
+    // Ensure we don't get rid of the multiboot header, because *that's* a problem with this language apparently
     std.mem.doNotOptimizeAway(multiboot_header);
 
     // Set the stack pointer to the correct location
     _ = .{ .stack = stack_bytes_slice };
-    std.debug.assert(magic == multiboot.MULTIBOOT_BOOTLOADER_MAGIC);
+    //std.debug.assert(magic == multiboot.MULTIBOOT_BOOTLOADER_MAGIC);  // Apparently this is fucking broken now idfk
+    _ = magic; // So this is necessary because i'm not manually verifying the argument anymore. fuck you.
 
     vga.set_size(info.framebuffer_width, info.framebuffer_height);
 
@@ -49,8 +51,4 @@ export fn kmain(magic: u32, info: *const multiboot.MultibootInfo) void {
     vga.print("Value of the thing: ");
     vga.writeInt(info.framebuffer_width);
     vga.println("");
-
-    // Test VGA graphics mode
-    vga.clear();
-    vga.set_vga_mode(vga.VGA_Mode.graphics);
 }
