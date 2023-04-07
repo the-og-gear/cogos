@@ -1,3 +1,5 @@
+#!/bin/bash
+
 qemu_start() {
     qemu-system-x86_64 disk.iso
 }
