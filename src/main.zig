@@ -48,7 +48,15 @@ export fn kmain(magic: u32, info: *const multiboot.MultibootInfo) void {
     vga.println(" CogOS ");
     vga.println("-------");
     vga.println("");
-    vga.print("Value of the thing: ");
-    vga.writeInt(info.framebuffer_width);
+    vga.print("Framebuffer width: ");
+    vga.writeUint(info.framebuffer_width);
     vga.println("");
+    vga.print("Framebuffer height: ");
+    vga.writeUint(info.framebuffer_height);
+    vga.println("");
+    vga.print("Multiboot feature flags: ");
+    vga.writeUint(info.flags);
+    vga.println("");
+    vga.println("ASCII Character Set Test");
+    vga.print(" !\"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~");
 }

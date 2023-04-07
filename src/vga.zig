@@ -48,27 +48,27 @@ pub fn clear() void {
     vga.clear();
 }
 
-// I really wish printing integers at runtime didn't look like this much of a mess, but. Here we are.
-// So, have some art.
-//    ,---,                                                  ___                                                 ___      ,---,
-// ,`--.' |                                                ,--.'|_                ,---,                        ,--.'|_  ,--.' |
-// |   :  :                 .---.                  ,---,   |  | :,'             ,---.'|                        |  | :,' |  |  :
-// :   |  '                /. ./|              ,-+-. /  |  :  : ' :             |   | :                        :  : ' : :  :  :
-// |   :  |             .-'-. ' |  ,--.--.    ,--.'|'   |.;__,'  /              |   | |   ,---.     ,--.--.  .;__,'  /  :  |  |,--.
-// '   '  ;            /___/ \: | /       \  |   |  ,"' ||  |   |             ,--.__| |  /     \   /       \ |  |   |   |  :  '   |
-// |   |  |         .-'.. '   ' ..--.  .-. | |   | /  | |:__,'| :            /   ,'   | /    /  | .--.  .-. |:__,'| :   |  |   /' :
-// '   :  ;        /___/ \:     ' \__\/: . . |   | |  | |  '  : |__         .   '  /  |.    ' / |  \__\/: . .  '  : |__ '  :  | | |
-// |   |  '        .   \  ' .\    ," .--.; | |   | |  |/   |  | '.'|        '   ; |:  |'   ;   /|  ," .--.; |  |  | '.'||  |  ' | :
-// '   :  |         \   \   ' \ |/  /  ,.  | |   | |--'    ;  :    ;        |   | '/  ''   |  / | /  /  ,.  |  ;  :    ;|  :  :_:,'
-// ;   |.'           \   \  |--";  :   .'   \|   |/        |  ,   /         |   :    :||   :    |;  :   .'   \ |  ,   / |  | ,'
-// '---'              \   \ |   |  ,     .-./'---'          ---`-'           \   \  /   \   \  / |  ,     .-./  ---`-'  `--''
-//                     '---"     `--`---'                                     `----'     `----'   `--`---'
-var vgaIntegerPrintBuffer: [21]u8 = undefined;
-fn intToString(int: u64, buf: []u8) ![]const u8 {
+// Print buffer for integers
+var printBuffer: [21]u8 = undefined;
+
+/// Converts an unsigned integer to a string.
+/// Pass in a 64-bit wide unsigned integer, a buffer to use, and get back a string. Very simple.
+fn uintToString(int: u64, buf: []u8) ![]const u8 {
     return try std.fmt.bufPrint(buf, "{}", .{int});
 }
-pub fn writeInt(int: anytype) void {
-    const intAsString = intToString(int, &vgaIntegerPrintBuffer) catch unreachable;
+
+/// Writes an unsigned integer to the screen using the VGA print function.
+pub fn writeUint(int: u64) void {
+    const intAsString = uintToString(int, &printBuffer) catch unreachable;
+    print(intAsString);
+}
+
+fn intToString(int: i64, buf: []u8) ![]const u8 {
+    return try std.fmt.bufPrint(buf, "{}", .{int});
+}
+
+pub fn writeInt(int: i64) void {
+    const intAsString = intToString(int, printBuffer);
     print(intAsString);
 }
 
