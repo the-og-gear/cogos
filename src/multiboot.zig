@@ -1,12 +1,11 @@
-// Multiboot structure definitions
-
-// Bootloader magic value
+/// Multiboot structure definitions
+/// Bootloader magic value
 pub const MULTIBOOT_BOOTLOADER_MAGIC: u32 = 0x2BADB002;
 
-// Magic value, for future updating
+/// Magic value, for future updating
 const MAGIC: u32 = 0x1BADB002;
 
-// Multiboot header struct definition
+/// Multiboot header struct definition
 pub const MultibootHeader = extern struct {
     magic: u32 = MAGIC, // Magic value, as set in specifications
     flags: u32, // Feature flags requested by OS
@@ -26,7 +25,7 @@ pub const MultibootHeader = extern struct {
     depth: u32,
 };
 
-// Multiboot info struct definition
+/// Multiboot info struct definition
 pub const MultibootInfo = extern struct {
     flags: u32, // Feature flags for entries passed back by bootloader
 
