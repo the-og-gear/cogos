@@ -94,9 +94,6 @@ pub fn set_size(wide: u32, high: u32) void {
     vga.size = wide * high;
 }
 
-/// TEMPORARY FUNCTION
-pub extern fn set_80_50_mode() void;
-
 /// The actual meat of the VGA module, the VGA struct
 pub const VGA = struct {
     /// A slice of VGA entries. This is the actual video memory, usually located at 0xB8000

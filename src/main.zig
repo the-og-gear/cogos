@@ -59,7 +59,6 @@ export fn kmain(magic: u32, info: *const multiboot.MultibootInfo) void {
     vga.print("Multiboot feature flags: ");
     vga.writeUint(info.flags);
     vga.println("");
-    vga.set_80_50_mode();
     vga.println("ASCII Character Set Test");
     vga.print(" !\"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~");
 }
