@@ -35,6 +35,7 @@ pub fn build(b: *std.Build) void {
     exe.strip = false;
 
     exe.addAssemblyFileSource(.{ .path = "src/arch/x86/start.s" });
+    exe.addAssemblyFileSource(.{ .path = "src/arch/x86/vga.s" });
 
     // This declares intent for the executable to be installed into the
     // standard location when the user invokes the "install" step (the default
